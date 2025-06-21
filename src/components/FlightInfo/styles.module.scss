@@ -1,0 +1,23 @@
+.flightInfo {
+  background-color: white;
+  color: black;
+  width: 600px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  box-sizing: border-box;
+  margin: 16px auto;
+}
+
+.flightDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
