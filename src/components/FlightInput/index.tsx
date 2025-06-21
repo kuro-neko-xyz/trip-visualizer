@@ -1,8 +1,38 @@
-import type { FC } from "react";
+import type { Dispatch, FC, SetStateAction } from "react";
+import type { Flights } from "../../models/Flight";
 
-const FlightInput: FC = () => {
+interface FlightInputProps {
+  setFlights: Dispatch<SetStateAction<Flights>>;
+  setShowForm: Dispatch<SetStateAction<boolean>>;
+}
+
+const FlightInput: FC<FlightInputProps> = ({ setFlights, setShowForm }) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const flightData = {
+      id: crypto.randomUUID(),
+      origin: {
+        airportCode: formData.get("originAirportCode") as string,
+        timeZone: formData.get("originTimeZone") as string,
+        dateTime: `${formData.get("departureDate")}T${formData.get(
+          "departureTime"
+        )}`,
+      },
+      destination: {
+        airportCode: formData.get("destinationAirportCode") as string,
+        timeZone: formData.get("destinationTimeZone") as string,
+        dateTime: `${formData.get("arrivalDate")}T${formData.get(
+          "arrivalTime"
+        )}`,
+      },
+    };
+    setFlights((prevFlights) => [...prevFlights, flightData]);
+    setShowForm(false);
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <table>
         <thead>
           <tr>
@@ -46,6 +76,11 @@ const FlightInput: FC = () => {
             </td>
             <td>
               <input type="time" name="arrivalTime" />
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={3}>
+              <button type="submit">Add Flight</button>
             </td>
           </tr>
         </tbody>
