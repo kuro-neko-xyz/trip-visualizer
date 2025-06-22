@@ -1,5 +1,6 @@
 import type { Dispatch, FC, SetStateAction } from "react";
 import type { Flights } from "../../models/Flight";
+import { timeZones } from "../../constants/timeZones";
 
 interface FlightInputProps {
   setFlights: Dispatch<SetStateAction<Flights>>;
@@ -54,10 +55,22 @@ const FlightInput: FC<FlightInputProps> = ({ setFlights, setShowForm }) => {
           <tr>
             <th scope="row">Time zone</th>
             <td>
-              <input type="text" name="originTimeZone" />
+              <select name="originTimeZone">
+                {timeZones.map((zone) => (
+                  <option key={zone.value} value={zone.value}>
+                    {zone.name}
+                  </option>
+                ))}
+              </select>
             </td>
             <td>
-              <input type="text" name="destinationTimeZone" />
+              <select name="destinationTimeZone">
+                {timeZones.map((zone) => (
+                  <option key={zone.value} value={zone.value}>
+                    {zone.name}
+                  </option>
+                ))}
+              </select>
             </td>
           </tr>
           <tr>
