@@ -8,11 +8,21 @@ function App() {
   const [flights, setFlights] = useState<Flights>([]);
   const [showForm, setShowForm] = useState(false);
 
+  const handleDeleteFlight = (flightId: string) => {
+    setFlights((prevFlights) =>
+      prevFlights.filter((flight) => flight.id !== flightId)
+    );
+  };
+
   return (
     <>
       <h1>Flights</h1>
       {flights.map((flight) => (
-        <FlightInfo flight={flight} key={flight.id} />
+        <FlightInfo
+          flight={flight}
+          key={flight.id}
+          onDeleteClick={handleDeleteFlight}
+        />
       ))}
       {showForm ? (
         <FlightInput setFlights={setFlights} setShowForm={setShowForm} />

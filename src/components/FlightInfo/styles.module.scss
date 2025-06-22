@@ -1,3 +1,12 @@
+.flightInfoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
 .flightInfo {
   background-color: white;
   color: black;
@@ -20,4 +29,13 @@
     margin: 0;
     padding: 0;
   }
+}
+
+.deleteButton {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-left: 16px;
+  position: absolute;
+  left: 600px;
 }
