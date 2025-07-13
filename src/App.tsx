@@ -2,13 +2,14 @@ import { useState } from "react";
 import "./App.css";
 import type { Flight, Flights } from "./models/Flight";
 import Container from "./components/Container";
+import useFlights from "./hooks/useFlights";
 
 function App() {
-  const [flights, setFlights] = useState<Flights>([]);
+  const [flights, storeFlights] = useFlights();
   const [showForm, setShowForm] = useState(false);
 
   const handleDeleteFlight = (flightId: string) => {
-    setFlights((prevFlights) =>
+    storeFlights((prevFlights: Flights) =>
       prevFlights.filter((flight) => flight.id !== flightId)
     );
   };
@@ -33,7 +34,7 @@ function App() {
         )}`,
       },
     };
-    setFlights((prevFlights) => [...prevFlights, flightData]);
+    storeFlights((prevFlights: Flights) => [...prevFlights, flightData]);
     setShowForm(false);
   };
 
