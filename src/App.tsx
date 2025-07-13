@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./App.css";
-import FlightInput from "./components/FlightInput";
 import type { Flight, Flights } from "./models/Flight";
-import FlightInfo from "./components/FlightInfo";
+import Container from "./components/Container";
 
 function App() {
   const [flights, setFlights] = useState<Flights>([]);
@@ -43,21 +42,13 @@ function App() {
   };
 
   return (
-    <>
-      <h1>Flights</h1>
-      {flights.map((flight) => (
-        <FlightInfo
-          flight={flight}
-          key={flight.id}
-          onDeleteClick={handleDeleteFlight}
-        />
-      ))}
-      {showForm ? (
-        <FlightInput onSubmit={handleAddFlight} />
-      ) : (
-        <button onClick={handleShowForm}>Add New Flight</button>
-      )}
-    </>
+    <Container
+      flights={flights}
+      handleAddFlight={handleAddFlight}
+      handleDeleteFlight={handleDeleteFlight}
+      handleShowForm={handleShowForm}
+      showForm={showForm}
+    />
   );
 }
 
