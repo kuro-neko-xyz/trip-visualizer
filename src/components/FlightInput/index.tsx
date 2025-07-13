@@ -1,39 +1,14 @@
-import type { Dispatch, FC, SetStateAction } from "react";
-import type { Flights } from "../../models/Flight";
+import type { FC } from "react";
 import { timeZones } from "../../constants/timeZones";
 
 interface FlightInputProps {
-  setFlights: Dispatch<SetStateAction<Flights>>;
-  setShowForm: Dispatch<SetStateAction<boolean>>;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const FlightInput: FC<FlightInputProps> = ({ setFlights, setShowForm }) => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const flightData = {
-      id: crypto.randomUUID(),
-      origin: {
-        airportCode: formData.get("originAirportCode") as string,
-        timeZone: formData.get("originTimeZone") as string,
-        dateTime: `${formData.get("departureDate")}T${formData.get(
-          "departureTime"
-        )}`,
-      },
-      destination: {
-        airportCode: formData.get("destinationAirportCode") as string,
-        timeZone: formData.get("destinationTimeZone") as string,
-        dateTime: `${formData.get("arrivalDate")}T${formData.get(
-          "arrivalTime"
-        )}`,
-      },
-    };
-    setFlights((prevFlights) => [...prevFlights, flightData]);
-    setShowForm(false);
-  };
+const FlightInput: FC<FlightInputProps> = ({ onSubmit }) => {
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <table>
         <thead>
           <tr>

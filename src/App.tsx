@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import FlightInput from "./components/FlightInput";
-import type { Flights } from "./models/Flight";
+import type { Flight, Flights } from "./models/Flight";
 import FlightInfo from "./components/FlightInfo";
 
 function App() {
@@ -12,6 +12,34 @@ function App() {
     setFlights((prevFlights) =>
       prevFlights.filter((flight) => flight.id !== flightId)
     );
+  };
+
+  const handleAddFlight = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const flightData: Flight = {
+      id: crypto.randomUUID(),
+      origin: {
+        airportCode: formData.get("originAirportCode") as string,
+        timeZone: formData.get("originTimeZone") as string,
+        dateTime: `${formData.get("departureDate")}T${formData.get(
+          "departureTime"
+        )}`,
+      },
+      destination: {
+        airportCode: formData.get("destinationAirportCode") as string,
+        timeZone: formData.get("destinationTimeZone") as string,
+        dateTime: `${formData.get("arrivalDate")}T${formData.get(
+          "arrivalTime"
+        )}`,
+      },
+    };
+    setFlights((prevFlights) => [...prevFlights, flightData]);
+    setShowForm(false);
+  };
+
+  const handleShowForm = () => {
+    setShowForm(true);
   };
 
   return (
@@ -25,9 +53,9 @@ function App() {
         />
       ))}
       {showForm ? (
-        <FlightInput setFlights={setFlights} setShowForm={setShowForm} />
+        <FlightInput onSubmit={handleAddFlight} />
       ) : (
-        <button onClick={() => setShowForm(true)}>Add New Flight</button>
+        <button onClick={handleShowForm}>Add New Flight</button>
       )}
     </>
   );
