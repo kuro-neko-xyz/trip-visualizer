@@ -1,6 +1,5 @@
 interface Point {
   airportCode: string;
-  timeZone: string;
   dateTime: string; // ISO date string
 }
 

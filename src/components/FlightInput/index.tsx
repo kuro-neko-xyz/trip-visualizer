@@ -1,14 +1,14 @@
 import type { FC } from "react";
 import { timeZones } from "../../constants/timeZones";
+import styles from "./styles.module.scss";
 
 interface FlightInputProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 const FlightInput: FC<FlightInputProps> = ({ onSubmit }) => {
-
   return (
-    <form onSubmit={onSubmit}>
+    <form className={styles.container} onSubmit={onSubmit}>
       <table>
         <thead>
           <tr>

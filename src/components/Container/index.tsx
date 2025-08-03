@@ -2,6 +2,7 @@ import type { FC } from "react";
 import type { Flight } from "../../models/Flight";
 import FlightInfo from "../FlightInfo";
 import FlightInput from "../FlightInput";
+import Itinerary from "../Itinerary";
 
 interface ContainerProps {
   flights: Flight[];
@@ -19,7 +20,7 @@ const Container: FC<ContainerProps> = ({
 }) => {
   return (
     <>
-      <h1>Flights</h1>
+      <h2>Flights</h2>
       {flights.map((flight) => (
         <FlightInfo
           flight={flight}
@@ -32,6 +33,7 @@ const Container: FC<ContainerProps> = ({
       ) : (
         <button onClick={handleShowForm}>Add New Flight</button>
       )}
+      <Itinerary flights={flights} />
     </>
   );
 };

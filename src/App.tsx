@@ -21,17 +21,15 @@ function App() {
       id: crypto.randomUUID(),
       origin: {
         airportCode: formData.get("originAirportCode") as string,
-        timeZone: formData.get("originTimeZone") as string,
         dateTime: `${formData.get("departureDate")}T${formData.get(
           "departureTime"
-        )}`,
+        )}${formData.get("originTimeZone")}`,
       },
       destination: {
         airportCode: formData.get("destinationAirportCode") as string,
-        timeZone: formData.get("destinationTimeZone") as string,
         dateTime: `${formData.get("arrivalDate")}T${formData.get(
           "arrivalTime"
-        )}`,
+        )}${formData.get("destinationTimeZone")}`,
       },
     };
     storeFlights((prevFlights: Flights) => [...prevFlights, flightData]);
