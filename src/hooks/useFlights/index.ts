@@ -8,7 +8,7 @@ const useFlights = () => {
   });
 
   const storeFlights = (callback: (prevFlights: Flights) => Flights) => {
-    return setFlights((prevFlights) => {
+    setFlights((prevFlights) => {
       const newFlights = callback(prevFlights);
       localStorage.setItem("flights", JSON.stringify(newFlights));
       return newFlights;
