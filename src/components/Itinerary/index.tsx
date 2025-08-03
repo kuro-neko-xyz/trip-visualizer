@@ -1,61 +1,173 @@
 import type { FC } from "react";
 import type { Flights } from "../../models/Flight";
 import Week from "../Week";
+import type {
+  DayItinerary,
+  ItineraryElement,
+  WeekItinerary,
+} from "../../models/Itinerary";
 
 interface ItineraryProps {
   flights: Flights;
 }
 
-const getFirstSunday = (flights: Flights): Date => {
-  const firstDeparture = flights.reduce((earliest, flight) => {
-    const departureDate = new Date(flight.origin.dateTime);
-    return departureDate < earliest ? departureDate : earliest;
-  }, new Date(flights[0].origin.dateTime));
+const getSortedFlights = (flights: Flights): Flights => {
+  return flights.sort((a, b) => {
+    const aDeparture = new Date(a.origin.dateTime);
+    const bDeparture = new Date(b.origin.dateTime);
 
+    return aDeparture.getTime() - bDeparture.getTime();
+  });
+};
+
+const getFirstSunday = (sortedFlights: Flights): Date => {
+  const firstDeparture = new Date(sortedFlights[0].origin.dateTime);
   const daysFromSunday = -firstDeparture.getDay();
   const firstSunday = new Date(firstDeparture);
   firstSunday.setDate(firstDeparture.getDate() + daysFromSunday);
+  firstSunday.setHours(0, 0, 0, 0);
 
   return firstSunday;
 };
 
-const getLastSaturday = (flights: Flights): Date => {
-  const lastArrival = flights.reduce((latest, flight) => {
-    const arrivalDate = new Date(flight.destination.dateTime);
-    return arrivalDate > latest ? arrivalDate : latest;
-  }, new Date(flights[0].destination.dateTime));
-
+const getLastSaturday = (sortedFlights: Flights): Date => {
+  const lastArrival = new Date(
+    sortedFlights[sortedFlights.length - 1].destination.dateTime
+  );
   const daysToSaturday = 6 - lastArrival.getDay();
   const lastSaturday = new Date(lastArrival);
   lastSaturday.setDate(lastArrival.getDate() + daysToSaturday);
+  lastSaturday.setHours(23, 59, 59, 999);
 
   return lastSaturday;
 };
 
-const getNumberOfWeeks = (firstDay: Date, secondDay: Date): number => {
-  let earlierDay: number;
-  let latterDay: number;
+const transformItinerary = (
+  sortedFlights: Flights,
+  firstSunday: Date,
+  lastSaturday: Date
+) => {
+  return sortedFlights.reduce<ItineraryElement[]>((acc, flight, index) => {
+    if (index === 0) {
+      acc.push({
+        location: flight.origin.airportCode,
+        startDate: firstSunday,
+        endDate: new Date(flight.origin.dateTime),
+      });
+    }
 
-  const firstDayTime = firstDay.getTime();
-  const secondDayTime = secondDay.getTime();
+    acc.push({
+      location: "Plane",
+      startDate: new Date(flight.origin.dateTime),
+      endDate: new Date(flight.destination.dateTime),
+    });
 
-  if (firstDay < secondDay) {
-    earlierDay = firstDayTime;
-    latterDay = secondDayTime;
-  } else {
-    earlierDay = secondDayTime;
-    latterDay = firstDayTime;
+    if (index < sortedFlights.length - 1) {
+      const nextFlight = sortedFlights[index + 1];
+      acc.push({
+        location: nextFlight.origin.airportCode,
+        startDate: new Date(flight.destination.dateTime),
+        endDate: new Date(nextFlight.origin.dateTime),
+      });
+    }
+
+    if (index === sortedFlights.length - 1) {
+      acc.push({
+        location: flight.destination.airportCode,
+        startDate: new Date(flight.destination.dateTime),
+        endDate: lastSaturday,
+      });
+    }
+
+    return acc;
+  }, []);
+};
+
+const mapItineraryByWeek = (
+  itinerary: ItineraryElement[],
+  firstSunday: Date
+) => {
+  const localItinerary = [...itinerary];
+  const weeks: WeekItinerary[] = [];
+  let dayCounter = 0;
+  let position = 0;
+
+  while (localItinerary.length) {
+    const week: WeekItinerary = [];
+
+    while (week.length < 7) {
+      const startOfTheDay = new Date(firstSunday);
+      startOfTheDay.setDate(firstSunday.getDate() + dayCounter);
+
+      const endOfTheDay = new Date(startOfTheDay);
+      endOfTheDay.setHours(23, 59, 59, 999);
+
+      const dayItinerary: DayItinerary = [];
+
+      while (localItinerary[0] && localItinerary[0].startDate <= endOfTheDay) {
+        if (localItinerary[0].startDate >= startOfTheDay) {
+          if (localItinerary[0].endDate <= endOfTheDay) {
+            dayItinerary.push({
+              ...localItinerary[0],
+              position,
+            });
+            localItinerary.shift();
+            position++;
+          } else {
+            dayItinerary.push({
+              ...localItinerary[0],
+              endDate: endOfTheDay,
+              position,
+            });
+            break;
+          }
+        } else {
+          if (localItinerary[0].endDate <= endOfTheDay) {
+            dayItinerary.push({
+              ...localItinerary[0],
+              startDate: startOfTheDay,
+              position,
+            });
+            localItinerary.shift();
+            position++;
+          } else {
+            dayItinerary.push({
+              ...localItinerary[0],
+              startDate: startOfTheDay,
+              endDate: endOfTheDay,
+              position,
+            });
+            break;
+          }
+        }
+      }
+
+      week.push(dayItinerary);
+      dayCounter++;
+    }
+
+    weeks.push(week);
   }
 
-  return Math.floor((latterDay - earlierDay) / 1000 / 60 / 60 / 24 / 7) + 1;
+  return weeks;
 };
 
 const Itinerary: FC<ItineraryProps> = ({ flights }) => {
-  const firstSunday = getFirstSunday(flights);
-  const lastSaturday = getLastSaturday(flights);
-  const numberOfWeeks = getNumberOfWeeks(firstSunday, lastSaturday);
+  const sortedFlights = getSortedFlights(flights);
+  const firstSunday = getFirstSunday(sortedFlights);
+  const lastSaturday = getLastSaturday(sortedFlights);
 
-  const weeks = Array.from({ length: numberOfWeeks }, (_, index) => <Week key={index} />);
+  const itinerary = transformItinerary(
+    sortedFlights,
+    firstSunday,
+    lastSaturday
+  );
+
+  const itineraryByWeek = mapItineraryByWeek(itinerary, firstSunday);
+
+  const weeks = itineraryByWeek.map((week, index) => (
+    <Week key={index} itinerary={week} />
+  ));
 
   return (
     <>

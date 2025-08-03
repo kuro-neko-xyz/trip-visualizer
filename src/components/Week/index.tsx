@@ -1,16 +1,18 @@
 import type { FC } from "react";
 import styles from "./styles.module.scss";
+import type { WeekItinerary } from "../../models/Itinerary";
+import Day from "../Day";
 
-const Week: FC = () => {
+interface WeekProps {
+  itinerary: WeekItinerary;
+}
+
+const Week: FC<WeekProps> = ({ itinerary }) => {
   return (
     <div className={styles.week}>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
-      <div className={styles.day}></div>
+      {itinerary.map((element, i) => (
+        <Day key={i} itinerary={element} />
+      ))}
     </div>
   );
 };
