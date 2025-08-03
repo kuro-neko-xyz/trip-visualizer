@@ -1,6 +1,6 @@
 export interface TimeZone {
   name: string;
-  value: number;
+  value: string;
 }
 
 export type TimeZones = TimeZone[];
