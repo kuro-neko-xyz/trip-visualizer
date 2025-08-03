@@ -6,6 +6,7 @@ import type {
   ItineraryElement,
   WeekItinerary,
 } from "../../models/Itinerary";
+import { MAX_LANE_POSITIONS } from "../../constants/lanes";
 
 interface ItineraryProps {
   flights: Flights;
@@ -83,6 +84,10 @@ const transformItinerary = (
   }, []);
 };
 
+const updatePosition = (position: number) => {
+  return (position + 1) % MAX_LANE_POSITIONS;
+};
+
 const mapItineraryByWeek = (
   itinerary: ItineraryElement[],
   firstSunday: Date
@@ -112,7 +117,7 @@ const mapItineraryByWeek = (
               position,
             });
             localItinerary.shift();
-            position++;
+            position = updatePosition(position);
           } else {
             dayItinerary.push({
               ...localItinerary[0],
@@ -129,7 +134,7 @@ const mapItineraryByWeek = (
               position,
             });
             localItinerary.shift();
-            position++;
+            position = updatePosition(position);
           } else {
             dayItinerary.push({
               ...localItinerary[0],
