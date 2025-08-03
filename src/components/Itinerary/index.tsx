@@ -6,7 +6,7 @@ import type {
   ItineraryElement,
   WeekItinerary,
 } from "../../models/Itinerary";
-import { MAX_LANE_POSITIONS } from "../../constants/lanes";
+import { MAX_LANE_POSITIONS, PLANE_CODE } from "../../constants/lanes";
 
 interface ItineraryProps {
   flights: Flights;
@@ -58,7 +58,7 @@ const transformItinerary = (
     }
 
     acc.push({
-      location: "Plane",
+      location: PLANE_CODE,
       startDate: new Date(flight.origin.dateTime),
       endDate: new Date(flight.destination.dateTime),
     });

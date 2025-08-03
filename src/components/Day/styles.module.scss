@@ -5,6 +5,12 @@
   border-width: 1px;
   border-color: black;
   position: relative;
+
+  span {
+    font-size: 0.5em;
+    position: relative;
+    top: -10px;
+  }
 }
 
 .timeSlot {
