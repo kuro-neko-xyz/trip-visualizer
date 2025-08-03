@@ -7,6 +7,13 @@ interface FlightInfoProps {
   onDeleteClick: (flightId: string) => void;
 }
 
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 const FlightInfo: FC<FlightInfoProps> = ({ flight, onDeleteClick }) => {
   return (
     <div className={styles.flightInfoContainer}>
@@ -14,13 +21,13 @@ const FlightInfo: FC<FlightInfoProps> = ({ flight, onDeleteClick }) => {
         <div className={styles.flightDetails}>
           <h2>{flight.origin.airportCode}</h2>
           <p>{new Date(flight.origin.dateTime).toLocaleDateString()}</p>
-          <p>{new Date(flight.origin.dateTime).toLocaleTimeString()}</p>
+          <p>{formatTime(new Date(flight.origin.dateTime))}</p>
         </div>
         <h2>✈️</h2>
         <div className={styles.flightDetails}>
           <h2>{flight.destination.airportCode}</h2>
           <p>{new Date(flight.destination.dateTime).toLocaleDateString()}</p>
-          <p>{new Date(flight.destination.dateTime).toLocaleTimeString()}</p>
+          <p>{formatTime(new Date(flight.destination.dateTime))}</p>
         </div>
       </div>
       <button
