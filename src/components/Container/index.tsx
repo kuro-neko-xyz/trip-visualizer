@@ -1,8 +1,7 @@
 import type { FC } from "react";
 import type { Flight } from "../../models/Flight";
-import FlightInfo from "../FlightInfo";
-import FlightInput from "../FlightInput";
 import Itinerary from "../Itinerary";
+import Flights from "../Flights";
 
 interface ContainerProps {
   flights: Flight[];
@@ -11,6 +10,7 @@ interface ContainerProps {
   handleShowForm: () => void;
   showForm: boolean;
 }
+
 const Container: FC<ContainerProps> = ({
   flights,
   handleAddFlight,
@@ -20,19 +20,13 @@ const Container: FC<ContainerProps> = ({
 }) => {
   return (
     <>
-      <h2>Flights</h2>
-      {flights.map((flight) => (
-        <FlightInfo
-          flight={flight}
-          key={flight.id}
-          onDeleteClick={handleDeleteFlight}
-        />
-      ))}
-      {showForm ? (
-        <FlightInput onSubmit={handleAddFlight} />
-      ) : (
-        <button onClick={handleShowForm}>Add New Flight</button>
-      )}
+      <Flights
+        flights={flights}
+        handleAddFlight={handleAddFlight}
+        handleDeleteFlight={handleDeleteFlight}
+        handleShowForm={handleShowForm}
+        showForm={showForm}
+      />
       <Itinerary flights={flights} />
     </>
   );
