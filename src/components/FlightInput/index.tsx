@@ -21,16 +21,16 @@ const FlightInput: FC<FlightInputProps> = ({ onSubmit }) => {
           <tr>
             <th scope="row">Airport Code</th>
             <td>
-              <input type="text" name="originAirportCode" />
+              <input type="text" name="originAirportCode" required/>
             </td>
             <td>
-              <input type="text" name="destinationAirportCode" />
+              <input type="text" name="destinationAirportCode" required/>
             </td>
           </tr>
           <tr>
             <th scope="row">Time zone</th>
             <td>
-              <select name="originTimeZone">
+              <select name="originTimeZone" required>
                 {timeZones.map((zone) => (
                   <option key={zone.value} value={zone.value}>
                     {zone.name}
@@ -39,7 +39,7 @@ const FlightInput: FC<FlightInputProps> = ({ onSubmit }) => {
               </select>
             </td>
             <td>
-              <select name="destinationTimeZone">
+              <select name="destinationTimeZone" required>
                 {timeZones.map((zone) => (
                   <option key={zone.value} value={zone.value}>
                     {zone.name}
@@ -51,19 +51,19 @@ const FlightInput: FC<FlightInputProps> = ({ onSubmit }) => {
           <tr>
             <th scope="row">Date (Departure/Arrival)</th>
             <td>
-              <input type="date" name="departureDate" />
+              <input type="date" name="departureDate" required/>
             </td>
             <td>
-              <input type="date" name="arrivalDate" />
+              <input type="date" name="arrivalDate" required/>
             </td>
           </tr>
           <tr>
             <th scope="row">Time (Departure/Arrival)</th>
             <td>
-              <input type="time" name="departureTime" />
+              <input type="time" name="departureTime" required/>
             </td>
             <td>
-              <input type="time" name="arrivalTime" />
+              <input type="time" name="arrivalTime" required/>
             </td>
           </tr>
           <tr>

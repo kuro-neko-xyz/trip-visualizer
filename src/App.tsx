@@ -3,14 +3,27 @@ import "./App.css";
 import type { Flight, Flights } from "./models/Flight";
 import Container from "./components/Container";
 import useFlights from "./hooks/useFlights";
+import useAccommodations from "./hooks/useAccommodations";
+import type { Accommodation, Accommodations } from "./models/Accommodation";
 
 function App() {
   const [flights, storeFlights] = useFlights();
-  const [showForm, setShowForm] = useState(false);
+  const [accommodations, storeAccommodations] = useAccommodations();
+
+  const [showFlightForm, setShowFlightForm] = useState(false);
+  const [showAccommodationForm, setShowAccommodationForm] = useState(false);
 
   const handleDeleteFlight = (flightId: string) => {
     storeFlights((prevFlights: Flights) =>
       prevFlights.filter((flight) => flight.id !== flightId)
+    );
+  };
+
+  const handleDeleteAccommodation = (accommodationId: string) => {
+    storeAccommodations((prevAccommodations: Accommodations) =>
+      prevAccommodations.filter(
+        (accommodation) => accommodation.id !== accommodationId
+      )
     );
   };
 
@@ -33,11 +46,31 @@ function App() {
       },
     };
     storeFlights((prevFlights: Flights) => [...prevFlights, flightData]);
-    setShowForm(false);
+    setShowFlightForm(false);
   };
 
-  const handleShowForm = () => {
-    setShowForm(true);
+  const handleAddAccommodation = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const accommodationData: Accommodation = {
+      id: crypto.randomUUID(),
+      airportCode: formData.get("airportCode") as string,
+      checkIn: `${formData.get("checkInDate")}T${formData.get(
+        "checkInTime"
+      )}${formData.get("timeZone")}`,
+      checkOut: `${formData.get("checkOutDate")}T${formData.get(
+        "checkOutTime"
+      )}${formData.get("timeZone")}`,
+    };
+    storeAccommodations((prevAccommodations: Accommodations) => [
+      ...prevAccommodations,
+      accommodationData,
+    ]);
+    setShowAccommodationForm(false);
+  };
+
+  const handleShowFlightForm = () => {
+    setShowFlightForm(true);
   };
 
   return (
@@ -45,8 +78,13 @@ function App() {
       flights={flights}
       handleAddFlight={handleAddFlight}
       handleDeleteFlight={handleDeleteFlight}
-      handleShowForm={handleShowForm}
-      showForm={showForm}
+      handleShowFlightForm={handleShowFlightForm}
+      showFlightForm={showFlightForm}
+      accommodations={accommodations}
+      handleAddAccommodation={handleAddAccommodation}
+      handleDeleteAccommodation={handleDeleteAccommodation}
+      handleShowAccommodationForm={() => setShowAccommodationForm(true)}
+      showAccommodationForm={showAccommodationForm}
     />
   );
 }

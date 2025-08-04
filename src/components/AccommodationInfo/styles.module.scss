@@ -1,0 +1,41 @@
+.accommodationInfoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.accommodationInfo {
+  background-color: white;
+  color: black;
+  width: 600px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  box-sizing: border-box;
+  margin: 16px auto;
+}
+
+.accommodationDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.deleteButton {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-left: 16px;
+  position: absolute;
+  left: 650px;
+}
