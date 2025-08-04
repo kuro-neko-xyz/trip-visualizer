@@ -46,7 +46,7 @@ const Container: FC<ContainerProps> = ({
         handleShowForm={handleShowAccommodationForm}
         showForm={showAccommodationForm}
       />
-      <Itinerary flights={flights} />
+      <Itinerary flights={flights} accommodations={accommodations} />
     </>
   );
 };

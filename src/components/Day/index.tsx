@@ -9,6 +9,7 @@ import {
 
 interface DayProps {
   itinerary: DayItinerary;
+  accommodations: DayItinerary;
 }
 
 const calculateWidth = (startDate: Date, endDate: Date): number => {
@@ -43,23 +44,49 @@ const generateRandomColorFromCode = (code: string): string => {
   return `hsl(${hue}, ${COLOR_SATURATION}%, ${COLOR_LIGHTNESS}%)`;
 };
 
-const Day: FC<DayProps> = ({ itinerary }) => {
+const Day: FC<DayProps> = ({ itinerary, accommodations }) => {
   return (
-    <div className={styles.day}>
-      {itinerary.map((element, index) => (
+    <div className={styles.container}>
+      <span>{itinerary[0].startDate.getDate()}</span>
+      <div className={styles.day}>
+        {itinerary.map((element, index) => (
+          <div
+            className={styles.timeSlot}
+            key={index}
+            style={{
+              width: `${calculateWidth(element.startDate, element.endDate)}%`,
+              left: `${calculateStartPosition(element.startDate)}%`,
+              top: `${element.position * 15 + 5}px`,
+              backgroundColor: generateRandomColorFromCode(element.location),
+            }}
+          >
+            <span>{element.location}</span>
+          </div>
+        ))}
         <div
           className={styles.timeSlot}
-          key={index}
           style={{
-            width: `${calculateWidth(element.startDate, element.endDate)}%`,
-            left: `${calculateStartPosition(element.startDate)}%`,
-            top: `${element.position * 15 + 5}px`,
-            backgroundColor: generateRandomColorFromCode(element.location),
+            width: "100%",
+            left: "0%",
+            bottom: 0,
+            backgroundColor: "rgba(255, 0, 0, 1)",
           }}
-        >
-          <span>{element.location}</span>
-        </div>
-      ))}
+        ></div>
+        {accommodations.map((element, index) => (
+          <div
+            className={styles.timeSlot}
+            key={index}
+            style={{
+              width: `${calculateWidth(element.startDate, element.endDate)}%`,
+              left: `${calculateStartPosition(element.startDate)}%`,
+              bottom: `${element.position * 10}px`,
+              backgroundColor: "rgba(0, 255, 0, 1)",
+            }}
+          >
+            <span>{element.location}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
