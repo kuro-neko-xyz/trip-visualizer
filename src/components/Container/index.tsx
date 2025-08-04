@@ -1,31 +1,50 @@
 import type { FC } from "react";
-import type { Flight } from "../../models/Flight";
+import type { Flights } from "../../models/Flight";
 import Itinerary from "../Itinerary";
-import Flights from "../Flights";
+import FlightsContainer from "../FlightsContainer";
+import AccommodationsContainer from "../AccommodationsContainer";
+import type { Accommodations } from "../../models/Accommodation";
 
 interface ContainerProps {
-  flights: Flight[];
+  flights: Flights;
   handleAddFlight: (event: React.FormEvent<HTMLFormElement>) => void;
   handleDeleteFlight: (flightId: string) => void;
-  handleShowForm: () => void;
-  showForm: boolean;
+  handleShowFlightForm: () => void;
+  showFlightForm: boolean;
+  accommodations: Accommodations;
+  handleAddAccommodation: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleDeleteAccommodation: (flightId: string) => void;
+  handleShowAccommodationForm: () => void;
+  showAccommodationForm: boolean;
 }
 
 const Container: FC<ContainerProps> = ({
   flights,
   handleAddFlight,
   handleDeleteFlight,
-  handleShowForm,
-  showForm,
+  handleShowFlightForm,
+  showFlightForm,
+  accommodations,
+  handleAddAccommodation,
+  handleDeleteAccommodation,
+  handleShowAccommodationForm,
+  showAccommodationForm,
 }) => {
   return (
     <>
-      <Flights
+      <FlightsContainer
         flights={flights}
         handleAddFlight={handleAddFlight}
         handleDeleteFlight={handleDeleteFlight}
-        handleShowForm={handleShowForm}
-        showForm={showForm}
+        handleShowForm={handleShowFlightForm}
+        showForm={showFlightForm}
+      />
+      <AccommodationsContainer
+        accommodations={accommodations}
+        handleAddAccommodation={handleAddAccommodation}
+        handleDeleteAccommodation={handleDeleteAccommodation}
+        handleShowForm={handleShowAccommodationForm}
+        showForm={showAccommodationForm}
       />
       <Itinerary flights={flights} />
     </>

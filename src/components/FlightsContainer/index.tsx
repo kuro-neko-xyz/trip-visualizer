@@ -1,17 +1,17 @@
 import type { FC } from "react";
 import FlightInfo from "../FlightInfo";
 import FlightInput from "../FlightInput";
-import type { Flight } from "../../models/Flight";
+import type { Flights } from "../../models/Flight";
 
 interface FlightsProps {
-  flights: Flight[];
+  flights: Flights;
   handleAddFlight: (event: React.FormEvent<HTMLFormElement>) => void;
   handleDeleteFlight: (flightId: string) => void;
   handleShowForm: () => void;
   showForm: boolean;
 }
 
-const Flights: FC<FlightsProps> = ({
+const FlightsContainer: FC<FlightsProps> = ({
   flights,
   handleAddFlight,
   handleDeleteFlight,
@@ -39,4 +39,4 @@ const Flights: FC<FlightsProps> = ({
   );
 };
 
-export default Flights;
+export default FlightsContainer;
