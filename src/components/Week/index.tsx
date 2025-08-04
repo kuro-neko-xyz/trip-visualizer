@@ -5,13 +5,18 @@ import Day from "../Day";
 
 interface WeekProps {
   itinerary: WeekItinerary;
+  accommodations?: WeekItinerary;
 }
 
-const Week: FC<WeekProps> = ({ itinerary }) => {
+const Week: FC<WeekProps> = ({ itinerary, accommodations }) => {
   return (
     <div className={styles.week}>
       {itinerary.map((element, i) => (
-        <Day key={i} itinerary={element} />
+        <Day
+          key={i}
+          itinerary={element}
+          accommodations={accommodations ? accommodations[i] : []}
+        />
       ))}
     </div>
   );

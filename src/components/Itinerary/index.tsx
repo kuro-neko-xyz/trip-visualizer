@@ -7,9 +7,11 @@ import type {
   WeekItinerary,
 } from "../../models/Itinerary";
 import { MAX_LANE_POSITIONS, PLANE_CODE } from "../../constants/lanes";
+import type { Accommodations } from "../../models/Accommodation";
 
 interface ItineraryProps {
   flights: Flights;
+  accommodations: Accommodations;
 }
 
 const getSortedFlights = (flights: Flights): Flights => {
@@ -18,6 +20,17 @@ const getSortedFlights = (flights: Flights): Flights => {
     const bDeparture = new Date(b.origin.dateTime);
 
     return aDeparture.getTime() - bDeparture.getTime();
+  });
+};
+
+const getSortedAccommodations = (
+  accommodations: Accommodations
+): Accommodations => {
+  return accommodations.sort((a, b) => {
+    const aCheckIn = new Date(a.checkIn);
+    const bCheckIn = new Date(b.checkIn);
+
+    return aCheckIn.getTime() - bCheckIn.getTime();
   });
 };
 
@@ -157,7 +170,89 @@ const mapItineraryByWeek = (
   return weeks;
 };
 
-const Itinerary: FC<ItineraryProps> = ({ flights }) => {
+const mapAccommodationsByWeek = (
+  itinerary: ItineraryElement[],
+  firstSunday: Date
+) => {
+  const localItinerary = [...itinerary];
+  const weeks: WeekItinerary[] = [];
+  let dayCounter = 0;
+  let position = 0;
+
+  while (localItinerary.length) {
+    const week: WeekItinerary = [];
+
+    while (week.length < 7) {
+      const startOfTheDay = new Date(firstSunday);
+      startOfTheDay.setDate(firstSunday.getDate() + dayCounter);
+
+      const endOfTheDay = new Date(startOfTheDay);
+      endOfTheDay.setHours(23, 59, 59, 999);
+
+      const dayItinerary: DayItinerary = [];
+
+      position = 0;
+
+      for (let i = 0; i < localItinerary.length; i++) {
+        while (
+          localItinerary[i] &&
+          localItinerary[i].startDate <= endOfTheDay
+        ) {
+          if (localItinerary[i].startDate >= startOfTheDay) {
+            if (localItinerary[i].endDate <= endOfTheDay) {
+              dayItinerary.push({
+                ...localItinerary[i],
+                position,
+              });
+              localItinerary.shift();
+              position = updatePosition(position);
+            } else {
+              dayItinerary.push({
+                ...localItinerary[i],
+                endDate: endOfTheDay,
+                position,
+              });
+              if (localItinerary[i + 1]?.startDate <= endOfTheDay || localItinerary[i + 1]?.endDate <= endOfTheDay) {
+                position = updatePosition(position);
+              }
+              break;
+            }
+          } else {
+            if (localItinerary[i].endDate <= endOfTheDay) {
+              dayItinerary.push({
+                ...localItinerary[i],
+                startDate: startOfTheDay,
+                position,
+              });
+              localItinerary.shift();
+              position = updatePosition(position);
+            } else {
+              dayItinerary.push({
+                ...localItinerary[i],
+                startDate: startOfTheDay,
+                endDate: endOfTheDay,
+                position,
+              });
+              if (localItinerary[i + 1]?.startDate <= endOfTheDay || localItinerary[i + 1]?.endDate <= endOfTheDay) {
+                position = updatePosition(position);
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      week.push(dayItinerary);
+      dayCounter++;
+    }
+
+    weeks.push(week);
+  }
+
+  return weeks;
+};
+
+const Itinerary: FC<ItineraryProps> = ({ flights, accommodations }) => {
   const sortedFlights = getSortedFlights(flights);
   const firstSunday = getFirstSunday(sortedFlights);
   const lastSaturday = getLastSaturday(sortedFlights);
@@ -170,8 +265,23 @@ const Itinerary: FC<ItineraryProps> = ({ flights }) => {
 
   const itineraryByWeek = mapItineraryByWeek(itinerary, firstSunday);
 
+  const sortedAccommodations = getSortedAccommodations(accommodations);
+
+  const accommodationsByWeek = mapAccommodationsByWeek(
+    sortedAccommodations.map((acc) => ({
+      location: acc.airportCode,
+      startDate: new Date(acc.checkIn),
+      endDate: new Date(acc.checkOut),
+    })),
+    firstSunday
+  );
+
   const weeks = itineraryByWeek.map((week, index) => (
-    <Week key={index} itinerary={week} />
+    <Week
+      key={index}
+      itinerary={week}
+      accommodations={accommodationsByWeek[index]}
+    />
   ));
 
   return (
