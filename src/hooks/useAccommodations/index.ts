@@ -8,18 +8,32 @@ const useAccommodations = () => {
   });
 
   const storeAccommodations = (
-    callback: (prevAccommodations: Accommodations) => Accommodations
+    args:
+      | Accommodations
+      | ((prevAccommodations: Accommodations) => Accommodations)
   ) => {
-    setAccommodations((prevAccommodations) => {
-      const newAccommodations = callback(prevAccommodations);
-      localStorage.setItem("accommodations", JSON.stringify(newAccommodations));
-      return newAccommodations;
-    });
+    if (typeof args === "function") {
+      setAccommodations((prevAccommodations) => {
+        const newAccommodations = args(prevAccommodations);
+        localStorage.setItem(
+          "accommodations",
+          JSON.stringify(newAccommodations)
+        );
+        return newAccommodations;
+      });
+    } else {
+      setAccommodations(args);
+      localStorage.setItem("accommodations", JSON.stringify(args));
+    }
   };
 
   return [accommodations, storeAccommodations] as [
     Accommodations,
-    (updater: (accommodations: Accommodations) => Accommodations) => void
+    (
+      args:
+        | Accommodations
+        | ((accommodations: Accommodations) => Accommodations)
+    ) => void
   ];
 };
 

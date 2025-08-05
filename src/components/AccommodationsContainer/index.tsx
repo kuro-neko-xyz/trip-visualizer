@@ -21,18 +21,20 @@ const AccommodationsContainer: FC<AccommodationProps> = ({
   return (
     <>
       <h2>Accommodations</h2>
-      {accommodations.map((accommodation) => (
-        <AccommodationInfo
-          accommodation={accommodation}
-          key={accommodation.id}
-          onDeleteClick={handleDeleteAccommodation}
-        />
-      ))}
-      {showForm ? (
-        <AccommodationInput onSubmit={handleAddAccommodation} />
-      ) : (
-        <button onClick={handleShowForm}>Add New Accommodation</button>
-      )}
+      <details open>
+        {accommodations.map((accommodation) => (
+          <AccommodationInfo
+            accommodation={accommodation}
+            key={accommodation.id}
+            onDeleteClick={handleDeleteAccommodation}
+          />
+        ))}
+        {showForm ? (
+          <AccommodationInput onSubmit={handleAddAccommodation} />
+        ) : (
+          <button onClick={handleShowForm}>Add New Accommodation</button>
+        )}
+      </details>
     </>
   );
 };

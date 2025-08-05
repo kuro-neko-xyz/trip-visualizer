@@ -34,7 +34,11 @@ const getSortedAccommodations = (
   });
 };
 
-const getFirstSunday = (sortedFlights: Flights): Date => {
+const getFirstSunday = (sortedFlights: Flights): Date | null => {
+  if (sortedFlights.length === 0) {
+    return null;
+  }
+
   const firstDeparture = new Date(sortedFlights[0].origin.dateTime);
   const daysFromSunday = -firstDeparture.getDay();
   const firstSunday = new Date(firstDeparture);
@@ -44,7 +48,11 @@ const getFirstSunday = (sortedFlights: Flights): Date => {
   return firstSunday;
 };
 
-const getLastSaturday = (sortedFlights: Flights): Date => {
+const getLastSaturday = (sortedFlights: Flights): Date | null => {
+  if (sortedFlights.length === 0) {
+    return null;
+  }
+
   const lastArrival = new Date(
     sortedFlights[sortedFlights.length - 1].destination.dateTime
   );
@@ -212,7 +220,10 @@ const mapAccommodationsByWeek = (
                 endDate: endOfTheDay,
                 position,
               });
-              if (localItinerary[i + 1]?.startDate <= endOfTheDay || localItinerary[i + 1]?.endDate <= endOfTheDay) {
+              if (
+                localItinerary[i + 1]?.startDate <= endOfTheDay ||
+                localItinerary[i + 1]?.endDate <= endOfTheDay
+              ) {
                 position = updatePosition(position);
               }
               break;
@@ -233,7 +244,10 @@ const mapAccommodationsByWeek = (
                 endDate: endOfTheDay,
                 position,
               });
-              if (localItinerary[i + 1]?.startDate <= endOfTheDay || localItinerary[i + 1]?.endDate <= endOfTheDay) {
+              if (
+                localItinerary[i + 1]?.startDate <= endOfTheDay ||
+                localItinerary[i + 1]?.endDate <= endOfTheDay
+              ) {
                 position = updatePosition(position);
               }
               break;
@@ -256,6 +270,10 @@ const Itinerary: FC<ItineraryProps> = ({ flights, accommodations }) => {
   const sortedFlights = getSortedFlights(flights);
   const firstSunday = getFirstSunday(sortedFlights);
   const lastSaturday = getLastSaturday(sortedFlights);
+
+  if (!firstSunday || !lastSaturday) {
+    return <p>No flights available to display the itinerary.</p>;
+  }
 
   const itinerary = transformItinerary(
     sortedFlights,

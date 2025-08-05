@@ -13,6 +13,16 @@ function App() {
   const [showFlightForm, setShowFlightForm] = useState(false);
   const [showAccommodationForm, setShowAccommodationForm] = useState(false);
 
+  const handleUpdateAllFlights = (updatedFlights: Flights) => {
+    storeFlights(updatedFlights);
+  };
+
+  const handleUpdateAllAccommodations = (
+    updatedAccommodations: Accommodations
+  ) => {
+    storeAccommodations(updatedAccommodations);
+  };
+
   const handleDeleteFlight = (flightId: string) => {
     storeFlights((prevFlights: Flights) =>
       prevFlights.filter((flight) => flight.id !== flightId)
@@ -76,11 +86,13 @@ function App() {
   return (
     <Container
       flights={flights}
+      handleUpdateAllFlights={handleUpdateAllFlights}
       handleAddFlight={handleAddFlight}
       handleDeleteFlight={handleDeleteFlight}
       handleShowFlightForm={handleShowFlightForm}
       showFlightForm={showFlightForm}
       accommodations={accommodations}
+      handleUpdateAllAccommodations={handleUpdateAllAccommodations}
       handleAddAccommodation={handleAddAccommodation}
       handleDeleteAccommodation={handleDeleteAccommodation}
       handleShowAccommodationForm={() => setShowAccommodationForm(true)}

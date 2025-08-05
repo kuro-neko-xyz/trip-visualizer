@@ -7,17 +7,24 @@ const useFlights = () => {
     return stored ? JSON.parse(stored) : [];
   });
 
-  const storeFlights = (callback: (prevFlights: Flights) => Flights) => {
-    setFlights((prevFlights) => {
-      const newFlights = callback(prevFlights);
-      localStorage.setItem("flights", JSON.stringify(newFlights));
-      return newFlights;
-    });
+  const storeFlights = (
+    args: Flights | ((prevFlights: Flights) => Flights)
+  ) => {
+    if (typeof args === "function") {
+      setFlights((prevFlights) => {
+        const newFlights = args(prevFlights);
+        localStorage.setItem("flights", JSON.stringify(newFlights));
+        return newFlights;
+      });
+    } else {
+      setFlights(args);
+      localStorage.setItem("flights", JSON.stringify(args));
+    }
   };
 
   return [flights, storeFlights] as [
     Flights,
-    (updater: (flights: Flights) => Flights) => void
+    (args: Flights | ((flights: Flights) => Flights)) => void
   ];
 };
 
